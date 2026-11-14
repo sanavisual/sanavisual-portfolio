@@ -1,0 +1,172 @@
+---
+import SplitText from './SplitText.astro';
+import SectionLabel from './SectionLabel.astro';
+import { services, reasons } from '../data/site';
+import { projects, mediaFor } from '../data/projects';
+
+const featuredClip = mediaFor(projects.find((p) => p.slug === 'ugc-petplate') ?? projects[0]);
+---
+
+<section id="services" class="py-24 md:py-36 bg-surface/40 border-y border-line" aria-labelledby="services-title">
+  <div class="container-x">
+    <SectionLabel index="02" label="Services" />
+    <div class="mt-5 grid gap-6 md:grid-cols-[1.2fr_1fr] md:items-end">
+      <SplitText id="services-title" text="What I can *edit* for you." class="font-display text-[clamp(2.5rem,6.5vw,5.5rem)]" />
+      <p class="max-w-md text-mute md:justify-self-end" data-reveal>
+        Specialised in short-form, performance-driven video for e-commerce — and the long-form VSLs that close the sale.
+      </p>
+    </div>
+
+    <ul class="bento mt-12 md:mt-16" role="list">
+      {
+        services.map((s, i) => (
+          <li class:list={['svc', s.featured && 'svc-featured']} data-reveal style={`--d:${i}`}>
+            {s.featured && (
+              <div class="svc-media" aria-hidden="true">
+                <img src={featuredClip.poster} alt="" loading="lazy" decoding="async" />
+              </div>
+            )}
+            <a href="#contact" class="svc-link" aria-label={`Ask about ${s.title}`} />
+            <div class="relative z-10 flex h-full flex-col">
+              <div class="flex items-center justify-between">
+                <span class="font-mono text-xs text-sand">0{i + 1}</span>
+                <span class="svc-arrow" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M8 7h9v9" /></svg>
+                </span>
+              </div>
+              <h3 class="mt-auto pt-10 text-[clamp(1.4rem,2.4vw,2rem)] font-semibold tracking-[-0.03em] leading-tight">{s.title}</h3>
+              <p class="mt-3 text-[0.95rem] leading-relaxed text-mute">{s.body}</p>
+              <div class="mt-5 flex flex-wrap gap-2">
+                {s.tags.map((t) => (
+                  <span class="chip">{t}</span>
+                ))}
+              </div>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    <!-- Why work with me -->
+    <div class="mt-20 grid gap-10 md:mt-28 md:grid-cols-[0.8fr_1.2fr]">
+      <h3 class="font-display text-[clamp(2rem,4.5vw,3.5rem)]" data-reveal>
+        Why work <span class="serif-accent">with me</span>
+      </h3>
+      <ul class="grid gap-px overflow-hidden rounded-2xl border border-line bg-line" role="list">
+        {
+          reasons.map((r, i) => (
+            <li class="grid gap-2 bg-ink p-6 sm:grid-cols-[3rem_1fr] sm:gap-4 md:p-7" data-reveal style={`--d:${i}`}>
+              <span class="font-mono text-xs text-sand pt-1">{String(i + 1).padStart(2, '0')}</span>
+              <div>
+                <p class="text-lg font-medium tracking-tight">{r.title}</p>
+                <p class="mt-1.5 text-mute">{r.body}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bento {
+    display: grid;
+    gap: 0.75rem;
+  }
+  @media (min-width: 768px) {
+    .bento {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .svc-featured {
+      grid-column: span 2;
+    }
+  }
+  @media (min-width: 1100px) {
+    .bento {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .svc-featured {
+      grid-column: span 2;
+      grid-row: span 2;
+    }
+  }
+  .svc {
+    position: relative;
+    overflow: hidden;
+    min-height: 17rem;
+    padding: clamp(1.4rem, 2.5vw, 2rem);
+    border-radius: 1.25rem;
+    border: 1px solid var(--color-line);
+    background: linear-gradient(180deg, var(--color-surface-2), var(--color-surface));
+    transition:
+      border-color 0.4s,
+      transform 0.8s var(--ease-out-expo);
+  }
+  .svc-featured {
+    min-height: 26rem;
+  }
+  .svc-link {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    border-radius: inherit;
+  }
+  .svc-media {
+    position: absolute;
+    inset: 0;
+  }
+  .svc-media img {
+    position: absolute;
+    right: -5%;
+    top: -10%;
+    width: 55%;
+    height: 120%;
+    object-fit: cover;
+    opacity: 0.45;
+    mask-image: linear-gradient(to left, #000 20%, transparent 90%);
+    transform: rotate(6deg);
+    transition: transform 1.2s var(--ease-out-expo), opacity 0.6s;
+  }
+  @media (max-width: 767px) {
+    .svc-media img {
+      width: 70%;
+      opacity: 0.25;
+    }
+  }
+  .svc-featured::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(to top, var(--color-surface) 25%, transparent 80%);
+  }
+  .svc-arrow {
+    display: grid;
+    place-items: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-line-strong);
+    color: var(--color-mute);
+    transition:
+      transform 0.6s var(--ease-out-expo),
+      background-color 0.3s,
+      color 0.3s;
+  }
+  @media (hover: hover) {
+    .svc:hover {
+      border-color: rgb(214 180 140 / 0.4);
+    }
+    .svc:hover .svc-arrow {
+      background: var(--color-sand);
+      color: var(--color-ink);
+      transform: rotate(45deg);
+    }
+    .svc-featured:hover .svc-media img {
+      transform: rotate(3deg) scale(1.04);
+      opacity: 0.6;
+    }
+  }
+</style>

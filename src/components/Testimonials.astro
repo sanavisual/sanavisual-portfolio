@@ -1,0 +1,26 @@
+---
+import { testimonials } from '../data/site';
+---
+
+{
+  testimonials.length > 0 && (
+    <section id="testimonials" class="py-24 md:py-32 border-t border-line" aria-labelledby="testimonials-title">
+      <div class="container-x">
+        <h2 id="testimonials-title" class="font-display text-[clamp(2.2rem,5vw,4rem)]" data-reveal>
+          What clients <span class="serif-accent">say</span>
+        </h2>
+        <ul class="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3" role="list">
+          {testimonials.map((t, i) => (
+            <li class="rounded-2xl border border-line bg-surface p-7" data-reveal style={`--d:${i}`}>
+              <blockquote class="text-lg leading-relaxed">“{t.quote}”</blockquote>
+              <p class="mt-6 text-sm">
+                <span class="font-medium">{t.name}</span>
+                {t.role && <span class="text-mute"> — {t.role}</span>}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )
+}

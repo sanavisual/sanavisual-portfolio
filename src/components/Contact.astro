@@ -1,0 +1,148 @@
+---
+import SectionLabel from './SectionLabel.astro';
+import SplitText from './SplitText.astro';
+import Logo from './Logo.astro';
+import { contact, socials, site, nav } from '../data/site';
+const wa = `https://wa.me/${contact.whatsappNumber}?text=${encodeURIComponent(contact.whatsappMessage)}`;
+---
+
+<section id="contact" class="contact grain" aria-labelledby="contact-title">
+  <div class="contact-glow" aria-hidden="true"></div>
+  <div class="container-x relative py-24 md:py-36">
+    <SectionLabel index="06" label="Get in touch" />
+    <SplitText
+      id="contact-title"
+      text={"Let's work\n*together.*"}
+      class="mt-6 font-display text-[clamp(3.2rem,11vw,10rem)]"
+    />
+    <p class="mt-8 max-w-xl text-lg text-mute" data-reveal>
+      Have a project in mind or just want to say hi? I'd love to hear from you. Reach out through any of the options below.
+    </p>
+
+    <div class="mt-12 flex flex-col gap-3 sm:flex-row" data-reveal>
+      <a href={wa} target="_blank" rel="noopener" class="btn btn-primary !min-h-14 !px-7 !text-base">
+        Message me on WhatsApp
+        <span class="btn-icon" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M7 17 17 7M8 7h9v9"></path></svg>
+        </span>
+      </a>
+      {
+        contact.bookingUrl && (
+          <a href={contact.bookingUrl} target="_blank" rel="noopener" class="btn btn-ghost !min-h-14 !px-7 !text-base">
+            Book a call
+          </a>
+        )
+      }
+      <a href={`mailto:${contact.email}`} class="btn btn-ghost !min-h-14 !px-7 !text-base">Send an email</a>
+    </div>
+
+    <ul class="contact-grid mt-14" role="list">
+      <li class="c-card" data-reveal>
+        <span class="label-mono text-faint">Email</span>
+        <a href={`mailto:${contact.email}`} class="c-value break-all">{contact.email}</a>
+        <button type="button" class="c-action" data-copy={contact.email}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>
+          <span data-copy-label>Copy</span>
+        </button>
+      </li>
+      <li class="c-card" data-reveal style="--d:1">
+        <span class="label-mono text-faint">WhatsApp</span>
+        <a href={wa} target="_blank" rel="noopener" class="c-value">{contact.whatsappDisplay}</a>
+        <a href={wa} target="_blank" rel="noopener" class="c-action">Open chat ↗</a>
+      </li>
+      <li class="c-card" data-reveal style="--d:2">
+        <span class="label-mono text-faint">Location</span>
+        <span class="c-value">{site.location}</span>
+        <span class="c-action !cursor-default text-faint">Available for remote projects</span>
+      </li>
+    </ul>
+
+    <div class="mt-10 flex flex-wrap items-center gap-3" data-reveal>
+      <span class="label-mono mr-2 text-faint">Connect</span>
+      {
+        socials.map((s) => (
+          <a href={s.href} target="_blank" rel="noopener" class="chip !min-h-10 !px-4 !text-sm hover:!border-sand hover:!text-cream">
+            {s.label} ↗
+          </a>
+        ))
+      }
+    </div>
+  </div>
+
+  <footer class="border-t border-line">
+    <div class="container-x flex flex-col gap-8 py-10 pb-[max(2.5rem,env(safe-area-inset-bottom))] md:flex-row md:items-center md:justify-between">
+      <a href="#top" aria-label="Back to top"><Logo /></a>
+      <nav aria-label="Footer">
+        <ul class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-mute">
+          {
+            nav.map((n) => (
+              <li>
+                <a href={n.href} class="hover:text-cream">
+                  {n.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      <p class="text-sm text-faint">© <span data-year>2026</span> {site.brand}. All rights reserved.</p>
+    </div>
+  </footer>
+</section>
+
+<style>
+  .contact {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, var(--color-ink), #0f0d0b);
+    border-top: 1px solid var(--color-line);
+  }
+  .contact-glow {
+    position: absolute;
+    inset: auto -20% -40% -20%;
+    height: 80%;
+    background: radial-gradient(50% 50% at 50% 50%, rgb(214 180 140 / 0.14), transparent 70%);
+    pointer-events: none;
+  }
+  .contact-grid {
+    display: grid;
+    gap: 0.75rem;
+  }
+  @media (min-width: 768px) {
+    .contact-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+  }
+  .c-card {
+    display: grid;
+    gap: 0.6rem;
+    padding: 1.5rem;
+    border-radius: 1.25rem;
+    border: 1px solid var(--color-line);
+    background: rgb(20 18 16 / 0.7);
+    backdrop-filter: blur(6px);
+  }
+  .c-value {
+    padding-block: 0.4rem;
+    font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+  a.c-value:hover {
+    color: var(--color-sand);
+  }
+  .c-action {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.75rem;
+    font-size: 0.85rem;
+    color: var(--color-mute);
+    transition: color 0.3s;
+  }
+  .c-action:hover {
+    color: var(--color-sand);
+  }
+</style>

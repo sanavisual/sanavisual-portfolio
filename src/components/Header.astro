@@ -1,0 +1,203 @@
+---
+import { nav, site, contact, socials } from '../data/site';
+import Logo from './Logo.astro';
+const wa = `https://wa.me/${contact.whatsappNumber}?text=${encodeURIComponent(contact.whatsappMessage)}`;
+---
+
+<header data-header class="site-header">
+  <div class="header-pill">
+    <a href="#top" class="flex min-h-11 items-center gap-2.5 pl-1" aria-label={`${site.brand} — back to top`}>
+      <Logo />
+    </a>
+
+    <nav aria-label="Main" class="hidden md:block">
+      <ul class="flex items-center gap-1">
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href} data-nav-link class="nav-link">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a href="#contact" class="btn btn-primary hidden !min-h-10 !px-4 !text-sm sm:inline-flex">Let's talk</a>
+      <button
+        type="button"
+        class="menu-toggle md:hidden"
+        data-menu-toggle
+        aria-controls="mobile-menu"
+        aria-expanded="false"
+        aria-label="Open menu"
+      >
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile menu -->
+<div id="mobile-menu" class="mobile-menu md:hidden" aria-hidden="true" inert>
+  <div class="container-x flex h-full flex-col pt-28 pb-[max(2rem,env(safe-area-inset-bottom))]">
+    <nav aria-label="Mobile">
+      <ul class="grid gap-1">
+        {
+          nav.map((item, i) => (
+            <li style={`--i:${i}`} class="mm-item">
+              <a href={item.href} class="flex items-baseline gap-4 py-2 font-display text-[clamp(2.6rem,13vw,4rem)]">
+                <span class="label-mono !text-[0.7rem] text-sand">0{i + 1}</span>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <div class="mt-auto grid gap-3 mm-item" style="--i:5">
+      <a href={wa} target="_blank" rel="noopener" class="btn btn-primary w-full">WhatsApp me</a>
+      <a href={`mailto:${contact.email}`} class="btn btn-ghost w-full">{contact.email}</a>
+      <div class="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-mute">
+        {
+          socials.map((s) => (
+            <a href={s.href} target="_blank" rel="noopener" class="inline-block py-2.5 underline-offset-4 hover:text-cream hover:underline">
+              {s.label}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 100;
+    padding: max(0.75rem, env(safe-area-inset-top)) var(--gutter) 0;
+    transition: transform 0.6s var(--ease-out-expo);
+    pointer-events: none;
+  }
+  .site-header.is-hidden {
+    transform: translateY(-120%);
+  }
+  .header-pill {
+    pointer-events: auto;
+    max-width: 84rem;
+    margin-inline: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.45rem 0.5rem 0.45rem 0.9rem;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    transition:
+      background-color 0.4s,
+      border-color 0.4s,
+      backdrop-filter 0.4s,
+      max-width 0.6s var(--ease-out-expo);
+  }
+  .site-header.is-scrolled .header-pill,
+  :global(html.menu-open) .header-pill {
+    max-width: 62rem;
+    background: rgb(20 18 16 / 0.72);
+    border-color: var(--color-line);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+  }
+  .nav-link {
+    position: relative;
+    display: block;
+    padding: 0.55rem 0.9rem;
+    font-size: 0.92rem;
+    color: var(--color-mute);
+    transition: color 0.3s;
+  }
+  .nav-link:hover,
+  .nav-link.is-active {
+    color: var(--color-cream);
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0.25rem;
+    width: 4px;
+    height: 4px;
+    margin-left: -2px;
+    border-radius: 9px;
+    background: var(--color-sand);
+    transform: scale(0);
+    transition: transform 0.4s var(--ease-out-expo);
+  }
+  .nav-link.is-active::after {
+    transform: scale(1);
+  }
+
+  .menu-toggle {
+    position: relative;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-line-strong);
+    display: grid;
+    place-items: center;
+  }
+  @media (min-width: 768px) {
+    .menu-toggle {
+      display: none;
+    }
+  }
+  .menu-toggle span {
+    position: absolute;
+    left: 50%;
+    width: 1.05rem;
+    height: 1.5px;
+    margin-left: -0.525rem;
+    background: var(--color-cream);
+    transition: transform 0.5s var(--ease-out-expo);
+  }
+  .menu-toggle span:first-child {
+    transform: translateY(-3.5px);
+  }
+  .menu-toggle span:last-child {
+    transform: translateY(3.5px);
+  }
+  .menu-toggle[aria-expanded='true'] span:first-child {
+    transform: rotate(45deg);
+  }
+  .menu-toggle[aria-expanded='true'] span:last-child {
+    transform: rotate(-45deg);
+  }
+
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    background: var(--color-ink);
+    clip-path: inset(0 0 100% 0);
+    transition: clip-path 0.7s var(--ease-in-out-quart);
+    overscroll-behavior: contain;
+    overflow-y: auto;
+  }
+  .mobile-menu.is-open {
+    clip-path: inset(0 0 0 0);
+  }
+  .mm-item {
+    opacity: 0;
+    transform: translateY(1.25rem);
+    transition:
+      opacity 0.5s,
+      transform 0.7s var(--ease-out-expo);
+  }
+  .mobile-menu.is-open .mm-item {
+    opacity: 1;
+    transform: none;
+    transition-delay: calc(0.25s + var(--i) * 0.05s);
+  }
+</style>

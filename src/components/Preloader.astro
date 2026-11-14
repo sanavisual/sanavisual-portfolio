@@ -1,0 +1,80 @@
+---
+import { site } from '../data/site';
+---
+
+<script is:inline>
+  // Show the intro only once per visit, and never for reduced-motion users.
+  try {
+    if (sessionStorage.getItem('sv-intro') || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.documentElement.classList.add('no-intro');
+    }
+  } catch (e) {
+    document.documentElement.classList.add('no-intro');
+  }
+</script>
+
+<div id="preloader" aria-hidden="true">
+  <div class="pl-inner">
+    <div class="flex items-center justify-between gap-6">
+      <span class="label-mono flex items-center gap-2 text-mute"><span class="rec-dot"></span> Rec</span>
+      <span class="label-mono text-mute">{site.brand}</span>
+    </div>
+    <div class="pl-time font-mono tabular-nums" data-pl-time>00:00:00:00</div>
+    <div class="pl-bar"><span data-pl-bar></span></div>
+    <div class="flex justify-between label-mono text-faint">
+      <span>Scene 01</span><span>Take 01</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  #preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 150;
+    display: grid;
+    place-items: center;
+    background: var(--color-ink);
+    transition: clip-path 0.9s var(--ease-in-out-quart);
+    clip-path: inset(0 0 0 0);
+    /* Safety net: disappears even if JavaScript fails to run. */
+    animation: pl-failsafe 0s linear 4s forwards;
+  }
+  :global(html.no-intro) #preloader,
+  :global(html:not(.js)) #preloader {
+    display: none;
+  }
+  #preloader.is-done {
+    clip-path: inset(0 0 100% 0);
+  }
+  .pl-inner {
+    width: min(26rem, 100% - 3rem);
+    display: grid;
+    gap: 1.1rem;
+  }
+  .pl-time {
+    font-size: clamp(2.6rem, 11vw, 4.5rem);
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--color-cream);
+  }
+  .pl-bar {
+    height: 2px;
+    background: var(--color-line);
+    overflow: hidden;
+  }
+  .pl-bar span {
+    display: block;
+    height: 100%;
+    width: 100%;
+    background: var(--color-sand);
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+  @keyframes pl-failsafe {
+    to {
+      visibility: hidden;
+      opacity: 0;
+    }
+  }
+</style>

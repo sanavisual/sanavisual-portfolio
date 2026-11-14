@@ -1,0 +1,16 @@
+---
+interface Props {
+  class?: string;
+}
+const { class: cls = '' } = Astro.props;
+---
+
+<span class={`inline-flex items-center gap-2.5 ${cls}`}>
+  <svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true" class="shrink-0">
+    <path d="M3 10V3h7M22 3h7v7M29 22v7h-7M10 29H3v-7" fill="none" stroke="#D6B48C" stroke-width="2" stroke-linecap="round"></path>
+    <path d="M12.5 10.5v11l9-5.5z" fill="#F3EEE7"></path>
+  </svg>
+  <span class="text-[1.08rem] font-semibold tracking-[-0.03em] leading-none">
+    Sana<span class="font-serif italic font-normal text-sand text-[1.22rem] tracking-[-0.01em]">Visual</span>
+  </span>
+</span>

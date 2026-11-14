@@ -1,0 +1,14 @@
+---
+interface Props {
+  index: string;
+  label: string;
+  class?: string;
+}
+const { index, label, class: cls = '' } = Astro.props;
+---
+
+<div class={`flex items-center gap-3 label-mono text-mute ${cls}`} data-reveal>
+  <span class="text-sand">{index}</span>
+  <span class="h-px w-8 bg-line-strong"></span>
+  <span>{label}</span>
+</div>

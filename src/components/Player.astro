@@ -1,0 +1,141 @@
+<dialog id="player" class="player" aria-labelledby="player-title">
+  <div class="player-inner">
+    <div class="player-bar">
+      <span class="label-mono flex items-center gap-2 text-mute">
+        <span class="rec-dot"></span><span data-player-count>01 / 01</span>
+      </span>
+      <button type="button" class="icon-btn" data-player-close aria-label="Close video">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+      </button>
+    </div>
+
+    <div class="player-stage">
+      <button type="button" class="icon-btn nav-btn" data-player-prev aria-label="Previous video">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"></path></svg>
+      </button>
+      <div class="player-frame" data-player-frame data-format="vertical">
+        <video controls playsinline preload="metadata"></video>
+      </div>
+      <button type="button" class="icon-btn nav-btn" data-player-next aria-label="Next video">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"></path></svg>
+      </button>
+    </div>
+
+    <div class="player-caption">
+      <h2 id="player-title" class="text-lg font-medium tracking-tight" data-player-title></h2>
+      <p class="text-sm text-mute" data-player-meta></p>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  .player {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-cream);
+  }
+  .player::backdrop {
+    background: rgb(8 7 6 / 0.94);
+    backdrop-filter: blur(10px);
+  }
+  .player[open] {
+    animation: player-in 0.5s var(--ease-out-expo);
+  }
+  @keyframes player-in {
+    from {
+      opacity: 0;
+      transform: scale(0.97);
+    }
+  }
+  .player-inner {
+    height: 100%;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: 0.75rem;
+    padding: max(0.75rem, env(safe-area-inset-top)) var(--gutter) max(1rem, env(safe-area-inset-bottom));
+  }
+  .player-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .player-stage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    min-height: 0;
+  }
+  .player-frame {
+    height: 100%;
+    max-height: 100%;
+    aspect-ratio: 9 / 16;
+    max-width: 100%;
+    border-radius: 1rem;
+    overflow: hidden;
+    background: #000;
+    border: 1px solid var(--color-line);
+  }
+  .player-frame[data-format='horizontal'] {
+    aspect-ratio: 16 / 9;
+    height: auto;
+    width: min(100%, 70rem);
+  }
+  .player-frame video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #000;
+  }
+  .player-caption {
+    text-align: center;
+    display: grid;
+    gap: 0.15rem;
+  }
+  .icon-btn {
+    display: grid;
+    place-items: center;
+    width: 2.9rem;
+    height: 2.9rem;
+    flex-shrink: 0;
+    border-radius: 999px;
+    border: 1px solid var(--color-line-strong);
+    background: rgb(243 238 231 / 0.04);
+    transition:
+      background-color 0.3s,
+      border-color 0.3s;
+  }
+  .icon-btn:hover {
+    background: rgb(243 238 231 / 0.1);
+    border-color: var(--color-sand);
+  }
+  /* On phones the arrows sit under the video; swipe also works. */
+  @media (max-width: 639px) {
+    .player-stage {
+      position: relative;
+    }
+    .nav-btn {
+      position: absolute;
+      bottom: -3.6rem;
+    }
+    .nav-btn[data-player-prev] {
+      left: 0;
+    }
+    .nav-btn[data-player-next] {
+      right: 0;
+    }
+    .player-caption {
+      padding-inline: 3.5rem;
+      min-height: 3rem;
+    }
+    .player-frame {
+      width: auto;
+    }
+  }
+</style>

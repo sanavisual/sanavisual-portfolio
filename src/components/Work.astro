@@ -1,0 +1,261 @@
+---
+import SplitText from './SplitText.astro';
+import SectionLabel from './SectionLabel.astro';
+import { projects, categories, categoryLabel, mediaFor, timecode } from '../data/projects';
+
+// Only show filter tabs that actually have projects.
+const tabs = categories.filter((c) => c.id === 'all' || projects.some((p) => p.category === c.id));
+const countFor = (id: string) => (id === 'all' ? projects.length : projects.filter((p) => p.category === id).length);
+---
+
+<section id="work" class="py-24 md:py-36" data-work aria-labelledby="work-title">
+  <div class="container-x">
+    <div class="grid gap-8 md:grid-cols-[1fr_auto] md:items-end">
+      <div>
+        <SectionLabel index="01" label="Selected work" />
+        <SplitText id="work-title" text="Ads built to *convert.*" class="mt-5 font-display text-[clamp(2.5rem,6.5vw,5.5rem)]" />
+      </div>
+      <p class="max-w-sm text-mute md:text-right" data-reveal>
+        Designed to grab attention and drive action. Tap any video to watch it with sound.
+      </p>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters mt-10 md:mt-14" role="group" aria-label="Filter projects by type" data-reveal>
+      {
+        tabs.map((t, i) => (
+          <button type="button" class="filter" data-filter={t.id} aria-pressed={i === 0 ? 'true' : 'false'}>
+            {t.label}
+            <sup class="font-mono text-[0.62rem] opacity-60">{String(countFor(t.id)).padStart(2, '0')}</sup>
+          </button>
+        ))
+      }
+    </div>
+    <p class="sr-only" aria-live="polite" data-work-status></p>
+
+    <!-- Grid -->
+    <ul class="work-grid mt-8 md:mt-10" role="list">
+      {
+        projects.map((p, i) => {
+          const m = mediaFor(p);
+          const meta = [categoryLabel[p.category], p.brand].filter(Boolean).join(' · ');
+          return (
+            <li class="contents">
+              <button
+                type="button"
+                class="card"
+                data-card
+                data-category={p.category}
+                data-full={m.full}
+                data-poster={m.poster}
+                data-title={p.title}
+                data-meta={meta}
+                data-format={p.format ?? 'vertical'}
+                data-cursor="play"
+                aria-label={`Play video: ${p.title}${p.brand ? ` for ${p.brand}` : ''}`}
+              >
+                <span class="card-media">
+                  <img src={m.poster} alt="" loading={i < 4 ? 'eager' : 'lazy'} decoding="async" width="540" height="960" />
+                  <video muted loop playsinline preload="none" data-src={m.preview} aria-hidden="true" tabindex="-1" />
+                  <span class="card-shade" aria-hidden="true" />
+                  <span class="card-top" aria-hidden="true">
+                    <span class="card-cat">{categoryLabel[p.category]}</span>
+                    <span class="font-mono text-[0.68rem] tabular-nums">{timecode(p.duration)}</span>
+                  </span>
+                  <span class="card-play" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M8 5.5v13l11-6.5z" /></svg>
+                  </span>
+                </span>
+                <span class="card-info">
+                  <span class="card-title">{p.title}</span>
+                  {p.brand && <span class="card-brand">{p.brand}</span>}
+                </span>
+              </button>
+            </li>
+          );
+        })
+      }
+    </ul>
+
+    <div class="mt-12 flex justify-center">
+      <button type="button" class="btn btn-ghost" data-more hidden>
+        Show all projects <span class="font-mono text-xs text-mute">(<span data-more-count></span>)</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .filters {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+    padding-block: 0.25rem;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: var(--gutter);
+  }
+  .filters::-webkit-scrollbar {
+    display: none;
+  }
+  .filter {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.3rem;
+    min-height: 2.75rem;
+    padding: 0 1.15rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-line-strong);
+    color: var(--color-mute);
+    font-size: 0.92rem;
+    line-height: 2.75rem;
+    transition:
+      color 0.3s,
+      background-color 0.3s,
+      border-color 0.3s;
+  }
+  .filter:hover {
+    color: var(--color-cream);
+    border-color: var(--color-mute);
+  }
+  .filter[aria-pressed='true'] {
+    background: var(--color-cream);
+    border-color: var(--color-cream);
+    color: var(--color-ink);
+  }
+
+  .work-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.75rem 0.75rem;
+  }
+  @media (min-width: 768px) {
+    .work-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 2.5rem 1.25rem;
+    }
+  }
+  @media (min-width: 1100px) {
+    .work-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .card {
+    display: block;
+    text-align: left;
+    width: 100%;
+    border-radius: 1.1rem;
+  }
+  .card[hidden] {
+    display: none;
+  }
+  .card-media {
+    position: relative;
+    display: block;
+    aspect-ratio: 9 / 16;
+    border-radius: 1.1rem;
+    overflow: hidden;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    transform: translateZ(0);
+    transition:
+      transform 0.8s var(--ease-out-expo),
+      border-color 0.4s,
+      box-shadow 0.8s var(--ease-out-expo);
+  }
+  .card-media img,
+  .card-media video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition:
+      transform 1.2s var(--ease-out-expo),
+      opacity 0.4s;
+  }
+  .card-media video {
+    opacity: 0;
+  }
+  :global(.card.is-playing) .card-media video {
+    opacity: 1;
+  }
+  .card-shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgb(11 10 9 / 0.55), transparent 28%, transparent 70%, rgb(11 10 9 / 0.5));
+  }
+  .card-top {
+    position: absolute;
+    inset: 0.7rem 0.7rem auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-cream);
+  }
+  .card-cat {
+    font-size: 0.66rem;
+    padding: 0.25rem 0.55rem;
+    border-radius: 999px;
+    background: rgb(11 10 9 / 0.55);
+    backdrop-filter: blur(8px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .card-play {
+    position: absolute;
+    right: 0.7rem;
+    bottom: 0.7rem;
+    display: grid;
+    place-items: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 999px;
+    background: var(--color-sand);
+    color: var(--color-ink);
+    transition: transform 0.6s var(--ease-out-expo);
+  }
+  .card-info {
+    display: grid;
+    gap: 0.15rem;
+    margin-top: 0.85rem;
+    padding-inline: 0.15rem;
+  }
+  .card-title {
+    font-size: clamp(0.88rem, 1.2vw, 1rem);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+  .card-brand {
+    font-size: 0.8rem;
+    color: var(--color-mute);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .card:hover .card-media {
+      transform: translateY(-6px);
+      border-color: rgb(214 180 140 / 0.5);
+      box-shadow: 0 30px 50px -25px rgb(214 180 140 / 0.25);
+    }
+    .card:hover img {
+      transform: scale(1.04);
+    }
+    .card:hover .card-play {
+      transform: scale(1.12);
+    }
+  }
+  .card:active .card-media {
+    transform: scale(0.98);
+  }
+  .card:focus-visible {
+    outline-offset: 5px;
+  }
+</style>

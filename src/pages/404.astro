@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+import Logo from '../components/Logo.astro';
+---
+
+<Base title="Page not found — SanaVisual">
+  <main id="main" class="grid min-h-[100svh] place-items-center px-6 text-center">
+    <div>
+      <Logo class="justify-center" />
+      <p class="mt-10 font-mono text-sm text-mute">ERR · 00:00:04:04</p>
+      <h1 class="mt-4 font-display text-[clamp(3rem,10vw,6rem)]">Lost the <span class="serif-accent">frame.</span></h1>
+      <p class="mt-4 text-mute">This page doesn't exist.</p>
+      <a href="/" class="btn btn-primary mt-10">Back to home</a>
+    </div>
+  </main>
+</Base>

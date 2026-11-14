@@ -1,0 +1,84 @@
+---
+import SectionLabel from './SectionLabel.astro';
+import { tools } from '../data/site';
+const groups = [
+  { title: 'Editing software', items: tools.editing },
+  { title: 'AI tools', items: tools.ai },
+];
+---
+
+<section id="tools" class="pb-24 md:pb-36" aria-labelledby="tools-title">
+  <div class="container-x">
+    <div class="grid gap-10 lg:grid-cols-[0.75fr_1.25fr]">
+      <div>
+        <SectionLabel index="04" label="Toolkit" />
+        <h2 id="tools-title" class="mt-5 font-display text-[clamp(2.2rem,5vw,4rem)]" data-reveal>
+          Better tools.<br /><span class="serif-accent">Bigger ideas.</span>
+        </h2>
+        <p class="mt-6 max-w-sm text-mute" data-reveal>
+          A mix of AI tools and professional editing software to turn ideas into scroll-stopping videos.
+        </p>
+      </div>
+
+      <div class="grid gap-10">
+        {
+          groups.map((g) => (
+            <div>
+              <h3 class="label-mono mb-4 text-mute" data-reveal>{g.title}</h3>
+              <ul class="tools" role="list">
+                {g.items.map((t, i) => (
+                  <li class="tool" data-reveal style={`--d:${i}`}>
+                    <span class="tool-badge" aria-hidden="true">{t.abbr}</span>
+                    <span>
+                      <span class="block font-medium tracking-tight">{t.name}</span>
+                      <span class="mt-0.5 block text-sm leading-snug text-mute">{t.use}</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .tools {
+    display: grid;
+    gap: 0.6rem;
+  }
+  @media (min-width: 640px) {
+    .tools {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .tool {
+    display: flex;
+    gap: 0.9rem;
+    align-items: flex-start;
+    padding: 1rem;
+    border: 1px solid var(--color-line);
+    border-radius: 1rem;
+    background: var(--color-surface);
+    transition: border-color 0.3s;
+  }
+  .tool:hover {
+    border-color: rgb(214 180 140 / 0.35);
+  }
+  .tool-badge {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 0.7rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-sand);
+    background: rgb(214 180 140 / 0.08);
+    border: 1px solid rgb(214 180 140 / 0.2);
+  }
+</style>
